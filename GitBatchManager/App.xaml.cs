@@ -7,7 +7,7 @@ using System.Windows.Threading;
 using GitBatchManager;
 using GitBatchManager.Business;
 using GitBatchManager.Utils;
-using H3C.Log;
+using Kybs0.Log;
 using Application = System.Windows.Application;
 
 namespace GitBatchManager

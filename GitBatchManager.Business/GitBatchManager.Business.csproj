@@ -66,8 +66,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="H3C.Log">
-      <Version>1.0.14</Version>
+    <PackageReference Include="Kybs0.Log">
+      <Version>1.0.6</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />
