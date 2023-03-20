@@ -123,7 +123,7 @@
                                           BorderThickness="0" Style="{StaticResource Style.ItemsControl}" Margin="0 12"
                                           ItemsSource="{Binding RepositoryItems,Mode=TwoWay}"/>
             <StackPanel Grid.Row="0" Grid.RowSpan="2" Orientation="Horizontal" Margin="24 20" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                <Button x:Name="SyncButton" Content="同步" Margin="12 0 0 0"
+                <Button x:Name="SyncButton" Content="强制拉取" Margin="12 0 0 0"
                         Style="{StaticResource Style.Button.AccentBackground.Text}"
                         Command="{Binding SyncRepositoriesCommand}"/>
             </StackPanel>
