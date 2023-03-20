@@ -174,12 +174,12 @@
                     <Setter TargetName="Part7" Property="Data" Value="M21.6626297,10.3647781C20.8815811,9.58372955,20.8754122,8.3235685,21.6612872,7.53769356L24.4923994,4.70658134C25.2727065,3.92627423 26.53299,3.92142998 27.3194839,4.70792389 28.1005325,5.48897247 28.1067014,6.74913352 27.3208265,7.53500847L24.4897143,10.3661207C23.7094072,11.1464278,22.4491236,11.151272,21.6626297,10.3647781z"/>
                     <Setter TargetName="Part8" Property="Data" Value="M24,16C24,14.8954305,24.8867064,14,25.9981014,14L30.0018986,14C31.1054196,14 32,14.8877296 32,16 32,17.1045695 31.1132936,18 30.0018986,18L25.9981014,18C24.8945804,18,24,17.1122704,24,16z"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                <DataTrigger Binding="{Binding ElementName=TheCircleLoading,Path= IsActive}" Value="True">
                     <DataTrigger.EnterActions>
                         <BeginStoryboard Name="LoadingBeginStoryboard" Storyboard="{StaticResource Storyboard.Circle}"/>
                     </DataTrigger.EnterActions>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding IsActive}" Value="False">
+                <DataTrigger Binding="{Binding ElementName=TheCircleLoading,Path=  IsActive}" Value="False">
                     <DataTrigger.EnterActions>
                         <StopStoryboard BeginStoryboardName="LoadingBeginStoryboard" />
                     </DataTrigger.EnterActions>

@@ -19,29 +19,21 @@ namespace GitBatchManager
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
             Loaded -= MainView_Loaded;
+            ViewModel.ErrorOutput += ViewModel_ErrorOutput;
             ViewModel.Initialize(this);
         }
+
         private MainViewModel ViewModel => DataContext as MainViewModel;
 
-        private async void SyncButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            LogGrid.Visibility = Visibility.Visible;
-            ExpandLogButton.Visibility = Visibility.Visible;
-            var items = ViewModel.NugetReplaceItems;
-            foreach (var repositoryItem in items)
-            {
-                var synchronizer = new RespositoryGitSynchronizer(repositoryItem.GetRepository());
-                await synchronizer.SyncAsync(ShowCmdResult);
-            }
-        }
-
-        private void ShowCmdResult(string output)
+        private void ViewModel_ErrorOutput(object sender, string output)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 ErrorMessageTextBox.Text += $"{output}\n";
+                ErrorMessageTextBox.ScrollToEnd();
             });
         }
+
         private void ReplacingItem_OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (sender is FrameworkElement uiElement && uiElement.DataContext is RepositoryItem item)
@@ -56,13 +48,12 @@ namespace GitBatchManager
 
         private void FoldLogButton_OnClick(object sender, RoutedEventArgs e)
         {
-            LogGrid.Visibility = Visibility.Collapsed;
-            ExpandLogButton.Visibility = Visibility.Visible;
+            ViewModel.IsLogVisible = false;
         }
 
         private void ExpandLogButton_OnClick(object sender, RoutedEventArgs e)
         {
-            LogGrid.Visibility = Visibility.Visible;
+            ViewModel.IsLogVisible = true;
         }
     }
 }

@@ -12,50 +12,52 @@
         <local:MainViewModel/>
     </UserControl.DataContext>
     <UserControl.Resources>
+        <utils:BoolToVisibility x:Key="BoolToVisibilityConverter"/>
+        <utils:BoolToVisibility x:Key="BoolToVisibilityReverseConverter" IsReverse="True"/>
         <Style x:Key="Style.Control" TargetType="ContentControl">
             <d:Grid.DataContext>
                 <local:RepositoryItem/>
             </d:Grid.DataContext>
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Margin" Value="0 6 0 6"/>
+            <Setter Property="Margin" Value="6"/>
+            <Setter Property="Width" Value="400"></Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ContentControl">
-                        <Grid Background="#01ffffff" PreviewMouseUp="ReplacingItem_OnPreviewMouseUp">
-                            <Border x:Name="RootBorder"
+                        <Border x:Name="RootBorder" Background="#01ffffff" PreviewMouseUp="ReplacingItem_OnPreviewMouseUp"
                                     BorderThickness="1" BorderBrush="#EEEEEE" CornerRadius="6">
-                                <Grid x:Name="ContentGrid">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="60" />
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="60"/>
-                                        </Grid.ColumnDefinitions>
-                                        <CheckBox x:Name="NugetCheckBox" VerticalAlignment="Center" HorizontalAlignment="Center"
+                            <Grid x:Name="ContentGrid">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="60"/>
+                                    </Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="NugetCheckBox" VerticalAlignment="Center" HorizontalAlignment="Center"
                                                   Style="{StaticResource Style.DefaultCheckBox}" 
                                                   IsChecked="{Binding IsSelected}">
-                                        </CheckBox>
-                                        <Grid Grid.Column="1" Margin="0 8">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition/>
-                                                <RowDefinition/>
-                                            </Grid.RowDefinitions>
-                                            <TextBlock Grid.Row="0" x:Name="NugetNameTextBox" Style="{StaticResource Style.TextBlock.Dark}" 
+                                    </CheckBox>
+                                    <Grid Grid.Column="1" Margin="0 8">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" x:Name="NugetNameTextBox" Style="{StaticResource Style.TextBlock.Dark}" 
                                                        VerticalAlignment="Center" Height="26" 
                                                        Text="{Binding RepositoryName}"/>
-                                            <TextBox Grid.Row="1" x:Name="SourceProjectTextBox" Style="{StaticResource Style.DefaultTextBox}" 
+                                        <TextBox Grid.Row="1" x:Name="SourceProjectTextBox" Style="{StaticResource Style.DefaultTextBox}" 
                                                      VerticalAlignment="Center" Height="32"
                                                      Text="{Binding RepositoryUri}"/>
-                                        </Grid>
-                                        <Grid Grid.Column="2">
-                                            <StackPanel VerticalAlignment="Center"
+                                    </Grid>
+                                    <Grid Grid.Column="2">
+                                        <StackPanel VerticalAlignment="Center"
                                                         HorizontalAlignment="Center">
-                                                <StackPanel x:Name="OperationPanel" Orientation="Horizontal"
+                                            <StackPanel x:Name="OperationPanel" Orientation="Horizontal"
                                                             VerticalAlignment="Center"
                                                             HorizontalAlignment="Center"
                                                             Background="Transparent">
-                                                    <Button Name="DeleteButton"
+                                                <Button Name="DeleteButton"
                                                             Style="{StaticResource Style.Button.Image}"
                                                             ToolTip="删除" VerticalAlignment="Center"
                                                             utils:ControlHelper.Image="{StaticResource Image.Delete.Normal}"
@@ -63,13 +65,12 @@
                                                             utils:ControlHelper.ImagePressed="{StaticResource Image.Delete.Hover}"
                                                             Command="{Binding ElementName=TheMainView,Path=DataContext.DeleteNugetItemCommand}"
                                                             CommandParameter="{Binding}"/>
-                                                </StackPanel>
                                             </StackPanel>
-                                        </Grid>
+                                        </StackPanel>
                                     </Grid>
                                 </Grid>
-                            </Border>
-                        </Grid>
+                            </Grid>
+                        </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -80,7 +81,7 @@
             <Setter Property="ItemsPanel">
                 <Setter.Value>
                     <ItemsPanelTemplate>
-                        <StackPanel></StackPanel>
+                        <WrapPanel Name="NugetVersionsPanel" FlowDirection="LeftToRight" HorizontalAlignment="Left"/>
                     </ItemsPanelTemplate>
                 </Setter.Value>
             </Setter>
@@ -92,7 +93,11 @@
                                     BorderBrush="{TemplateBinding Border.BorderBrush}"
                                     Background="{TemplateBinding Panel.Background}"
                                     x:Name="Bd" SnapsToDevicePixels="True">
-                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                                          CanContentScroll="True" Padding="0 0 6 0"
+                                          PanningMode="VerticalOnly">
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                            </ScrollViewer>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -100,42 +105,61 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <!--Nuget列表-->
-        <Grid Grid.Row="0">
-            <TextBlock Text="仓库列表" Style="{StaticResource Style.TextBlock.Dark}"
-                       FontSize="16" FontWeight="Bold" VerticalAlignment="Center"
-                       HorizontalAlignment="Center"/>
-            <Button x:Name="AddNugetItemButton" Content="添加"  Style="{StaticResource Style.Button.AccentBackground.Text}"
-                    HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 24 0"
-                    Command="{Binding AddNugetItemCommand}"/>
+        <Grid x:Name="OperationView" Visibility="{Binding IsOperating,Converter={StaticResource BoolToVisibilityReverseConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <!--Nuget列表-->
+            <Grid Grid.Row="0">
+                <TextBlock Text="{Binding RepositoryItems.Count,StringFormat={}仓库列表({0})}" Style="{StaticResource Style.TextBlock.Dark}"
+                           FontSize="16" FontWeight="Bold" VerticalAlignment="Center"
+                           HorizontalAlignment="Center"/>
+                <Button x:Name="AddNugetItemButton" Content="添加"  Style="{StaticResource Style.Button.AccentBackground.Text}"
+                        HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 24 0"
+                        Command="{Binding AddNugetItemCommand}"/>
+            </Grid>
+            <resources:CustomItemsControl x:Name="StrategiesItemsControl" Grid.Row="1" Background="Transparent" 
+                                          BorderThickness="0" Style="{StaticResource Style.ItemsControl}" Margin="0 12"
+                                          ItemsSource="{Binding RepositoryItems,Mode=TwoWay}"/>
+            <StackPanel Grid.Row="0" Grid.RowSpan="2" Orientation="Horizontal" Margin="24 20" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                <Button x:Name="SyncButton" Content="同步" Margin="12 0 0 0"
+                        Style="{StaticResource Style.Button.AccentBackground.Text}"
+                        Command="{Binding SyncRepositoriesCommand}"/>
+            </StackPanel>
         </Grid>
-        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled"
-                      CanContentScroll="True" Margin="0 12"
-                      PanningMode="VerticalOnly" Padding="0 0 6 0">
-            <resources:CustomItemsControl x:Name="NugetReplacingStrategiesItemsControl" Background="Transparent" BorderThickness="0"
-                                          Style="{StaticResource Style.ItemsControl}"
-                                          ItemsSource="{Binding NugetReplaceItems,Mode=TwoWay}"/>
-        </ScrollViewer>
-        <StackPanel Grid.Row="0" Grid.RowSpan="2" Orientation="Horizontal" Margin="24 20" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-            <Button Name="SyncButton" Content="同步" Margin="12 0 0 0"
-                    Click="SyncButton_OnClick" Style="{StaticResource Style.Button.AccentBackground.Text}"/>
-            <Button Name="ExpandLogButton" Content="操作日志" Margin="12 0 0 0" Visibility="Collapsed"
+        <Grid Visibility="{Binding IsOperating,Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid x:Name="OperatingGrid" Visibility="{Binding IsLogVisible,Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <resources:CircleLoading IsActive="True" 
+                                             LoadingSize="Size32" Height="32" Width="32"
+                                             ForegroundBrush="{StaticResource Brush.Icon.Accent.Normal}"/>
+                    <resources:ComplexTextBlock Margin="0 16 0 0" Text="同步中({0}/{1})，请稍后...">
+                        <resources:ComplexTextBlock.ContentFormats>
+                            <resources:ContentFormatsCollection>
+                                <TextBlock Text="{Binding SyncIndex}"
+                                           FontSize="14" Foreground="{StaticResource Brush.Text.Normal}"/>
+                                <TextBlock Text="{Binding RepositoryItems.Count}"
+                                           FontSize="14" Foreground="{StaticResource Brush.Text.Normal}"/>
+                            </resources:ContentFormatsCollection>
+                        </resources:ComplexTextBlock.ContentFormats>
+                    </resources:ComplexTextBlock>
+                </StackPanel>
+                <Button Name="ExpandLogButton" Content="操作日志" Margin="24 20" Visibility="Visible"
+                    VerticalAlignment="Bottom" HorizontalAlignment="Center"
                     Click="ExpandLogButton_OnClick" Style="{StaticResource Style.Button.AccentBackground.Text}"/>
-        </StackPanel>
-        <Grid x:Name="LogGrid" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="2" Margin="10 6">
-            <GroupBox Header="操作日志" Margin="0 -6 -6 0" Padding="0" Style="{StaticResource Style.GroupBox}"
+            </Grid>
+            <Grid x:Name="LogGrid" Margin="10 6"
+                  Visibility="{Binding IsLogVisible,Converter={StaticResource BoolToVisibilityConverter}}">
+                <GroupBox Header="操作日志" Margin="0 -6 -6 0" Padding="0" Style="{StaticResource Style.GroupBox}"
                       utils:ControlHelper.IsFocused="{Binding ElementName=ErrorMessageTextBox,Path=IsFocused}">
-                <TextBox Name="ErrorMessageTextBox" IsReadOnly="True" Padding="6 6 6 6" Margin="0 0 -4 0"
+                    <TextBox Name="ErrorMessageTextBox" IsReadOnly="True" Padding="6 6 6 6" Margin="0 0 -4 0"
                          Style="{StaticResource Style.MultiLineTextBox}" BorderThickness="0"
                          TextWrapping="Wrap"
                          VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top" 
                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-            </GroupBox>
-            <Button Name="FoldLogButton" ToolTip="收起" Margin="0 0 0 6" 
+                </GroupBox>
+                <Button Name="FoldLogButton" ToolTip="收起" Margin="0 0 0 6" 
                     VerticalAlignment="Bottom" HorizontalAlignment="Center"
                     Click="FoldLogButton_OnClick" Style="{StaticResource Style.Button.Image}"
                     Height="32" Width="32"
@@ -143,10 +167,11 @@
                     utils:ControlHelper.ImageHover="{StaticResource Image.Up.Green}"
                     utils:ControlHelper.ImagePressed="{StaticResource Image.Up.Green}"
                     utils:ControlHelper.ImageSize="32" RenderTransformOrigin="0.5,0.5">
-                <Button.RenderTransform>
-                    <RotateTransform Angle="180"/>
-                </Button.RenderTransform>
-            </Button>
+                    <Button.RenderTransform>
+                        <RotateTransform Angle="180"/>
+                    </Button.RenderTransform>
+                </Button>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

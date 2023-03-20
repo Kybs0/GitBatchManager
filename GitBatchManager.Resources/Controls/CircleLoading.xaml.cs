@@ -15,13 +15,13 @@ namespace GitBatchManager.Resources
             DataContext = this;
         }
 
-        public static readonly DependencyProperty IsActivepProperty = DependencyProperty.Register("IsActive",
+        public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register("IsActive",
             typeof(bool), typeof(CircleLoading), new PropertyMetadata(default(bool)));
 
         public bool IsActive
         {
-            get => (bool)GetValue(IsActivepProperty);
-            set => SetValue(IsActivepProperty,value);
+            get => (bool)GetValue(IsActiveProperty);
+            set => SetValue(IsActiveProperty, value);
         }
 
         public static readonly DependencyProperty ForegroundBrushProperty = DependencyProperty.Register(

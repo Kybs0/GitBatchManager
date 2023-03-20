@@ -30,11 +30,10 @@ namespace GitBatchManager.Utils
         /// </summary>
         public static string Run(string cmd)
         {
-            var process = StartNewtProcess("cmd.exe");
+            using var process = StartNewtProcess("cmd.exe");
             process.StandardInput.WriteLine(cmd);
             process.StandardInput.WriteLine("exit");
             string outStr = process.StandardOutput.ReadToEnd();
-            process.Close();
             return outStr;
         }
 
@@ -47,7 +46,7 @@ namespace GitBatchManager.Utils
         {
             return await Task.Run(() =>
             {
-                var process = StartNewtProcess("cmd.exe");
+                using var process = StartNewtProcess("cmd.exe");
                 cmdList.ForEach(process.StandardInput.WriteLine);
                 process.StandardInput.WriteLine("exit");
 
@@ -61,8 +60,6 @@ namespace GitBatchManager.Utils
                         outStr += line + "\r\n";
                     }
                 }
-
-                process.Close();
                 return outStr;
             });
         }
