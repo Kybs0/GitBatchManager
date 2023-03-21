@@ -35,14 +35,13 @@ namespace GitBatchManager.Business
             {
                 var cloneCmd = $"git clone {_repository.RepositoryUri} {_repository.RepositoryName}";
                 syncCmds.Add(cloneCmd);
-            }
-            syncCmds.Add($"cd {_repository.RepositoryName}");
-            if (directoryExist)
+            }else
             {
+                syncCmds.Add($"cd {_repository.RepositoryName}");
                 syncCmds.Add("git checkout .");
                 syncCmds.Add("git clean - xdf");
+                syncCmds.Add("git pull");
             }
-            syncCmds.Add("git pull"); 
             await CmdExecutor.RunAsync(syncCmds, showCmdResult);
         }
     }
